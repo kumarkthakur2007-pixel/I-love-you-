@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>💌 Tumhare Liye Ek Sawaal</title>
+
+  <!-- ══ PWA Meta Tags ══ -->
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#e8476a"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="Sawaal 💌"/>
+  <meta name="application-name" content="Sawaal 💌"/>
+  <meta name="description" content="Ek dil se pocha hua sawaal — sirf tumhare liye 🌹"/>
+
+  <!-- Apple Touch Icon (SVG inline fallback) -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' rx='36' fill='%23e8476a'/%3E%3Ctext y='125' x='90' text-anchor='middle' font-size='110'%3E%F0%9F%92%8C%3C/text%3E%3C/svg%3E"/>
+
+  <!-- OG / Social Meta -->
+  <meta property="og:title" content="💌 Tumhare Liye Ek Sawaal"/>
+  <meta property="og:description" content="Kuch kehna tha… dil se 🌹"/>
+  <meta property="og:type" content="website"/>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Quicksand:wght@400;600&family=Noto+Sans+Devanagari:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --pink-light: #fff0f5;
+      --pink-mid:   #ffd6e7;
+      --pink-rose:  #ff85a1;
+      --pink-deep:  #e8476a;
+      --text-dark:  #5a2a3a;
+      --text-mid:   #a0526a;
+      --radius:     999px;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; min-height: 100%; overflow-x: hidden; }
+
+    body {
+      font-family: 'Quicksand', 'Noto Sans Devanagari', sans-serif;
+      background: var(--pink-light);
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Animated bg gradient */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse at 15% 15%, #ffd6e7 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 85%, #fce4ec 0%, transparent 55%),
+        radial-gradient(ellipse at 55% 5%,  #f8bbd0 0%, transparent 45%),
+        var(--pink-light);
+      animation: bgShift 9s ease-in-out infinite alternate;
+    }
+    @keyframes bgShift {
+      0%   { filter: hue-rotate(0deg)  brightness(1); }
+      100% { filter: hue-rotate(15deg) brightness(1.05); }
+    }
+
+    /* Floating bg hearts */
+    .bg-hearts { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .bg-heart {
+      position: absolute; opacity: 0;
+      font-size: clamp(12px, 2.5vw, 24px);
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) scale(0.8) rotate(-10deg); opacity: 0; }
+      10%  { opacity: 0.3; }
+      90%  { opacity: 0.2; }
+      100% { transform: translateY(-10vh) scale(1.1) rotate(10deg); opacity: 0; }
+    }
+
+    /* Screen */
+    .screen {
+      display: none;
+      position: relative; z-index: 10;
+      width: 100%;
+      max-width: 500px;
+      animation: fadeSlideIn 0.65s cubic-bezier(0.22,1,0.36,1) both;
+    }
+    .screen.active { display: block; }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(28px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+
+    /* Card */
+    .card {
+      background: rgba(255,255,255,0.76);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1.5px solid rgba(255,180,200,0.5);
+      border-radius: 32px;
+      padding: clamp(30px, 8vw, 58px) clamp(22px, 7vw, 50px);
+      text-align: center;
+      box-shadow: 0 4px 6px rgba(232,71,106,0.06), 0 24px 64px rgba(232,71,106,0.15), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    /* Heart icon */
+    .heart-icon {
+      font-size: clamp(46px, 11vw, 72px);
+      display: block;
+      margin-bottom: 10px;
+      animation: heartbeat 1.5s ease-in-out infinite;
+      filter: drop-shadow(0 4px 12px rgba(232,71,106,0.35));
+      line-height: 1;
+    }
+    @keyframes heartbeat {
+      0%  { transform: scale(1); }
+      14% { transform: scale(1.22); }
+      28% { transform: scale(1); }
+      42% { transform: scale(1.13); }
+      70% { transform: scale(1); }
+    }
+
+    /* Progress dots */
+    .dots {
+      display: flex; gap: 7px; justify-content: center; margin-bottom: 20px;
+    }
+    .dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--pink-mid);
+      transition: background 0.3s, transform 0.3s;
+    }
+    .dot.on { background: var(--pink-deep); transform: scale(1.3); }
+
+    /* Text */
+    .q-label {
+      font-size: clamp(10px, 2.4vw, 12px);
+      color: var(--text-mid);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .q-text {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(20px, 5.5vw, 33px);
+      line-height: 1.35;
+      color: var(--text-dark);
+      margin-bottom: 8px;
+    }
+    .q-sub {
+      font-size: clamp(13px, 3vw, 15px);
+      color: var(--text-mid);
+      font-style: italic;
+      margin-bottom: 26px;
+      line-height: 1.5;
+    }
+
+    /* Buttons */
+    .btn-row { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: clamp(14px, 3.5vw, 17px);
+      padding: 13px 30px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+    .btn-yes {
+      background: linear-gradient(135deg, #ff85a1, #e8476a);
+      color: #fff;
+      box-shadow: 0 6px 22px rgba(232,71,106,0.38);
+    }
+    .btn-yes:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 10px 30px rgba(232,71,106,0.46); }
+    .btn-yes:active { transform: scale(0.97); }
+    .btn-no {
+      background: #f5c6d3;
+      color: var(--text-mid);
+      box-shadow: 0 4px 12px rgba(168,90,120,0.12);
+    }
+    .btn-no.rogue { position: fixed; z-index: 9999; transition: none; }
+
+    /* Taunt */
+    .taunt {
+      font-size: 13px; color: var(--text-mid);
+      margin-top: 16px; min-height: 20px;
+      font-style: italic; opacity: 0; transition: opacity 0.4s;
+    }
+    .taunt.show { opacity: 1; }
+
+    /* Confetti */
+    .confetti {
+      position: fixed; pointer-events: none; z-index: 200;
+      animation: confettiFall ease-in forwards;
+    }
+    @keyframes confettiFall {
+      0%   { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+      100% { opacity: 0; transform: translateY(85vh) rotate(400deg) scale(0.3); }
+    }
+
+    /* ═══════════ YES SUCCESS SCREEN ═══════════ */
+    #screenYes { max-width: 560px; }
+
+    .yes-card {
+      background: rgba(255,255,255,0.82);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1.5px solid rgba(255,180,200,0.5);
+      border-radius: 32px;
+      padding: clamp(30px, 8vw, 54px) clamp(20px, 7vw, 46px);
+      text-align: center;
+      box-shadow: 0 24px 64px rgba(232,71,106,0.15), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+
+    .yes-flowers {
+      font-size: clamp(22px, 6vw, 36px);
+      letter-spacing: 4px;
+      line-height: 1.6;
+      margin-bottom: 12px;
+      animation: fadeSlideIn 0.5s 0.1s both;
+    }
+    .yes-big-heart {
+      font-size: clamp(58px, 14vw, 88px);
+      display: block;
+      margin-bottom: 10px;
+      animation: heartbeat 1.4s ease-in-out infinite, popIn 0.5s 0.2s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.4) rotate(-10deg); }
+      to   { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    .yes-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 700;
+      font-size: clamp(22px, 6vw, 38px);
+      color: var(--pink-deep);
+      margin-bottom: 18px;
+      animation: fadeSlideIn 0.6s 0.4s both;
+    }
+    .yes-msg {
+      font-size: clamp(14px, 3.5vw, 17px);
+      color: var(--text-dark);
+      line-height: 1.9;
+      margin-bottom: 22px;
+      animation: fadeSlideIn 0.6s 0.6s both;
+    }
+    .yes-divider {
+      font-size: clamp(20px, 5vw, 28px);
+      letter-spacing: 8px;
+      margin: 16px 0;
+      animation: fadeSlideIn 0.6s 0.8s both;
+    }
+
+    /* Shayari block */
+    .shayari {
+      background: linear-gradient(135deg, rgba(255,213,226,0.6), rgba(255,240,245,0.6));
+      border: 1px solid rgba(255,160,190,0.4);
+      border-radius: 20px;
+      padding: clamp(16px, 5vw, 26px) clamp(14px, 5vw, 26px);
+      margin: 0 auto 18px;
+      max-width: 430px;
+      position: relative; overflow: hidden;
+      animation: fadeSlideIn 0.7s 1s both;
+    }
+    .shayari::before {
+      content: '❝';
+      position: absolute; top: 6px; left: 12px;
+      font-size: 40px;
+      color: rgba(232,71,106,0.13);
+      font-family: serif; line-height: 1;
+    }
+    .shayari p {
+      font-family: 'Noto Sans Devanagari', serif;
+      font-size: clamp(13px, 3.2vw, 16px);
+      color: var(--text-dark);
+      line-height: 2.1;
+      font-style: italic;
+    }
+    .shayari-flowers {
+      font-size: clamp(16px, 4vw, 22px);
+      letter-spacing: 5px;
+      margin-top: 12px;
+      display: block;
+    }
+    .yes-end {
+      font-size: clamp(22px, 6vw, 34px);
+      letter-spacing: 5px;
+      display: block;
+      margin-top: 18px;
+      animation: fadeSlideIn 0.6s 1.3s both, heartbeat 1.4s 2s ease-in-out infinite;
+    }
+
+    /* PWA Install Banner */
+    #installBanner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid rgba(255,180,200,0.6);
+      border-radius: 20px;
+      padding: 14px 20px;
+      box-shadow: 0 8px 32px rgba(232,71,106,0.2);
+      text-align: center;
+      max-width: 320px;
+      width: calc(100% - 40px);
+      animation: fadeSlideIn 0.5s both;
+    }
+    #installBanner p {
+      font-size: 13px;
+      color: var(--text-mid);
+      margin-bottom: 10px;
+    }
+    #installBanner strong {
+      color: var(--text-dark);
+      display: block;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .install-btns { display: flex; gap: 10px; justify-content: center; }
+    .btn-install {
+      font-family: 'Quicksand', sans-serif;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 9px 20px;
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+    .btn-install-yes {
+      background: linear-gradient(135deg, #ff85a1, #e8476a);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(232,71,106,0.3);
+    }
+    .btn-install-no {
+      background: #f5c6d3;
+      color: var(--text-mid);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-hearts" id="bgHearts"></div>
+
+  <!-- ═══ SCREEN 1 — Pehla sawaal ═══ -->
+  <div class="screen active" id="screen1">
+    <div class="card">
+      <span class="heart-icon">💌</span>
+      <div class="q-label">Pehle ek baat…</div>
+      <div class="q-text">Kya tum meri dost ban sakti ho? 🥺</div>
+      <div class="q-sub">Bas ek choti si shuruwat… 🌸</div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="goTo(2)">Haan! 😊</button>
+        <button class="btn btn-no" id="no1">Nahi…</button>
+      </div>
+      <p class="taunt" id="taunt1"></p>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 2 — Will you be my girlfriend? ═══ -->
+  <div class="screen" id="screen2">
+    <div class="card">
+      <span class="heart-icon">💗</span>
+      <div class="dots">
+        <div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="q-label">Aur ab asli sawaal…</div>
+      <div class="q-text">Will you be my girlfriend? 💝</div>
+      <div class="q-sub">Dil se pooch raha hun, seriously 🌹</div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="sayYes()">YES! 💕</button>
+        <button class="btn btn-no" id="no2">No…</button>
+      </div>
+      <p class="taunt" id="taunt2"></p>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 3 — Mere jaisa nahi milega ═══ -->
+  <div class="screen" id="screen3">
+    <div class="card">
+      <span class="heart-icon">🥺</span>
+      <div class="dots">
+        <div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="q-label">Ek aur mauka…</div>
+      <div class="q-text">Soch lo — mere jaisa nahi milega phir! 😤💖</div>
+      <div class="q-sub">Main kuch khaas toh hun na? 🙈✨</div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="sayYes()">Haan ho tum! 💓</button>
+        <button class="btn btn-no" id="no3">Abhi nahi…</button>
+      </div>
+      <p class="taunt" id="taunt3"></p>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 4 — Please yaar yes kar do ═══ -->
+  <div class="screen" id="screen4">
+    <div class="card">
+      <span class="heart-icon">🙏</span>
+      <div class="dots">
+        <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div class="q-label">Please yaar…</div>
+      <div class="q-text">Please yaar, yes kar do! 😭💞</div>
+      <div class="q-sub">Haath jod raha hun… literally 🙏🙏🙏</div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="sayYes()">Theek hai, YES! 🥰</button>
+        <button class="btn btn-no" id="no4">Nahi…</button>
+      </div>
+      <p class="taunt" id="taunt4"></p>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 5 — Main rone lag jaunga ═══ -->
+  <div class="screen" id="screen5">
+    <div class="card">
+      <span class="heart-icon">😢</span>
+      <div class="dots">
+        <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot"></div>
+      </div>
+      <div class="q-label">Ab toh…</div>
+      <div class="q-text">Main rone lag jaunga… 😭💔</div>
+      <div class="q-sub">Dekho aansu aa rahe hain 😢😢</div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="sayYes()">Ruko mat! YES! 💗</button>
+        <button class="btn btn-no" id="no5">…</button>
+      </div>
+      <p class="taunt" id="taunt5"></p>
+    </div>
+  </div>
+
+  <!-- ═══ SCREEN 6 — Chalo koi na (NO IS DEAD) ═══ -->
+  <div class="screen" id="screen6">
+    <div class="card">
+      <span class="heart-icon">💔</span>
+      <div class="dots">
+        <div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div><div class="dot on"></div>
+      </div>
+      <div class="q-label">Last chance…</div>
+      <div class="q-text">Chalo koi na… par ek baar aur? 🥺❤️</div>
+      <div class="q-sub">No button toot gaya hai. Sirf YES bacha hai 😌</div>
+      <div class="btn-row">
+        <button class="btn btn-yes" onclick="sayYes()">YES ❤️</button>
+        <button class="btn btn-no" style="opacity:0.3; cursor:not-allowed; pointer-events:none; text-decoration:line-through;">No (toot gaya 🔨)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ YES — SUCCESS SCREEN ═══ -->
+  <div class="screen" id="screenYes">
+    <div class="yes-card">
+
+      <div class="yes-flowers">🌺 🌹 🌸 🌼 🌺 🌹 🌸 🌼</div>
+
+      <span class="yes-big-heart">🥰</span>
+
+      <div class="yes-title">Hay My Sweetheart! ❤️</div>
+
+      <div class="yes-msg">
+        Mujhe nahi pata ki mai tumko<br/>
+        <strong>kitne din… kitne hafte…<br/>kitne mahine… kitne saal</strong><br/>
+        khush rakh paunga 💭<br/><br/>
+        Par mai <em>wada karta hun</em> ki mai tumhe<br/>
+        <strong>teen din bahut khush rakhunga —</strong><br/><br/>
+        1️⃣ &nbsp;<strong>Today</strong> 🌤️<br/>
+        2️⃣ &nbsp;<strong>Yesterday</strong> 🌙<br/>
+        3️⃣ &nbsp;<strong>Future day</strong> 🌟<br/><br/>
+        Aur agar inn teen dinon mein bhi<br/>
+        nahi rakh paya toh —<br/>
+        <em>ek din toh zaroor hoga…</em><br/>
+        aur woh din hoga — <strong>Everyday 💗</strong>
+      </div>
+
+      <div class="yes-divider">🌹 ❤️ 🌹</div>
+
+      <div class="shayari">
+        <p>
+          मैं न कहता था कि मैं तरसा हुआ हूँ प्यार का,<br/>
+          लो मोहब्बत हो गई, अब दोस्ती का क्या करूँ?<br/><br/>
+          ज़हन से उतरी नहीं पहली मोहब्बत आज तक,<br/>
+          ये जो तुमसे हो गई, इस आख़िरी का क्या करूँ?
+        </p>
+        <span class="shayari-flowers">🌺 🌹 💕 🌸 🌼 ❤️ 🥰</span>
+      </div>
+
+      <span class="yes-end">
+        💗 🌹 🥰 ❤️ 🌺 💖 🌸 💝 🌼 💓
+      </span>
+
+    </div>
+  </div>
+
+  <!-- PWA Install Banner -->
+  <div id="installBanner">
+    <strong>💌 App mein save karo?</strong>
+    <p>Ise home screen pe add karo — offline bhi chalega!</p>
+    <div class="install-btns">
+      <button class="btn-install btn-install-yes" id="btnInstall">Add karo 📲</button>
+      <button class="btn-install btn-install-no" id="btnDismiss">Baad mein</button>
+    </div>
+  </div>
+
+  <script>
+    /* ── CONFIG ── */
+    const MARGIN = 16;
+
+    const TAUNTS = {
+      no1: ["Ek dost bhi nahi? 🥺", "Please yaar… 🙏", "Soch lo ek baar 😊"],
+      no2: ["Ruko ruko! 🏃💨", "Pakad ke dekho! 😜", "Itni door bhaag ke kya? 💔", "Wapas aao yaar! 🥺"],
+      no3: ["Sach mein? 😤", "Galti ho rahi hai! 💅", "Tch tch tch… 🙈"],
+      no4: ["HAATH JOD RAHA HUN! 🙏😭", "Kab tak bhagogi? 💔", "Yaar please! 😭"],
+      no5: ["Ro raha hun! 😭😭", "Happy? Dekho kya kiya! 😢", "Aansu mat dilao…"],
+    };
+
+    const NEXT_SCREEN = { no2: 3, no3: 4, no4: 5, no5: 6 };
+
+    let escCount  = {};
+    let isRogue   = {};
+
+    /* ── BG HEARTS ── */
+    (function(){
+      const c = document.getElementById('bgHearts');
+      const e = ['💗','💕','💖','🩷','💓','🌸','✨','🌺','🌹','🌼'];
+      for(let i=0;i<28;i++){
+        const s = document.createElement('span');
+        s.className='bg-heart';
+        s.textContent=e[~~(Math.random()*e.length)];
+        const dur=7+Math.random()*11;
+        s.style.cssText=`left:${Math.random()*100}%;bottom:0;animation-duration:${dur}s;animation-delay:${-(Math.random()*dur)}s`;
+        c.appendChild(s);
+      }
+    })();
+
+    /* ── SHOW SCREEN ── */
+    function showScreen(id){
+      document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+      const el=document.getElementById(id);
+      el.style.animation='none'; el.offsetHeight; el.style.animation='';
+      el.classList.add('active');
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    function goTo(n){
+      showScreen('screen'+n);
+      attachNo('no'+n);
+    }
+
+    /* ── ATTACH NO BUTTON ── */
+    function attachNo(id){
+      const btn=document.getElementById(id);
+      if(!btn) return;
+      escCount[id]=0; isRogue[id]=false;
+      btn.addEventListener('mouseover',()=>escNo(id));
+      btn.addEventListener('touchstart',(e)=>{e.preventDefault();escNo(id);},{passive:false});
+    }
+    attachNo('no1');
+
+    /* ── ESCAPE LOGIC ── */
+    function escNo(id){
+      const btn=document.getElementById(id);
+      if(!btn||btn.style.display==='none') return;
+
+      escCount[id]=(escCount[id]||0)+1;
+
+      if(!isRogue[id]){
+        const r=btn.getBoundingClientRect();
+        btn.style.left=r.left+'px'; btn.style.top=r.top+'px';
+        btn.classList.add('rogue');
+        isRogue[id]=true;
+      }
+
+      const bw=btn.offsetWidth||110, bh=btn.offsetHeight||46;
+      const x=MARGIN+Math.random()*(window.innerWidth -bw-MARGIN*2);
+      const y=MARGIN+Math.random()*(window.innerHeight-bh-MARGIN*2);
+      btn.style.left=x+'px'; btn.style.top=y+'px';
+
+      const num=id.replace('no','');
+      const tauntEl=document.getElementById('taunt'+num);
+      if(tauntEl){
+        const list=TAUNTS[id]||["Nahi nahi! 😜"];
+        tauntEl.textContent=list[Math.min(escCount[id]-1,list.length-1)];
+        tauntEl.classList.add('show');
+      }
+
+      if(escCount[id]>=3 && NEXT_SCREEN[id]){
+        setTimeout(()=>{
+          btn.style.display='none';
+          const next=NEXT_SCREEN[id];
+          showScreen('screen'+next);
+          if(next<=5) attachNo('no'+next);
+        },500);
+      }
+    }
+
+    /* ── YES ── */
+    function sayYes(){
+      launchConfetti();
+      showScreen('screenYes');
+      setTimeout(launchConfetti,500);
+      setTimeout(launchConfetti,1000);
+      setTimeout(launchConfetti,1600);
+    }
+
+    /* ── CONFETTI ── */
+    function launchConfetti(){
+      const e=['💗','💖','💕','🩷','💓','🌸','✨','🎉','🌺','🌹','💝','🥰','❤️','🌼'];
+      for(let i=0;i<45;i++){
+        const el=document.createElement('span');
+        el.className='confetti';
+        el.textContent=e[~~(Math.random()*e.length)];
+        el.style.left=Math.random()*100+'vw';
+        el.style.top='-30px';
+        const dur=1.6+Math.random()*2, del=Math.random()*0.9;
+        el.style.animationDuration=dur+'s';
+        el.style.animationDelay=del+'s';
+        el.style.fontSize=(16+Math.random()*22)+'px';
+        document.body.appendChild(el);
+        setTimeout(()=>el.remove(),(dur+del+0.3)*1000);
+      }
+    }
+
+    /* ── RESIZE GUARD ── */
+    window.addEventListener('resize',()=>{
+      Object.keys(isRogue).forEach(id=>{
+        if(!isRogue[id]) return;
+        const btn=document.getElementById(id);
+        if(!btn||btn.style.display==='none') return;
+        const bw=btn.offsetWidth, bh=btn.offsetHeight;
+        const x=parseFloat(btn.style.left), y=parseFloat(btn.style.top);
+        btn.style.left=Math.max(MARGIN,Math.min(x,window.innerWidth -bw-MARGIN))+'px';
+        btn.style.top =Math.max(MARGIN,Math.min(y,window.innerHeight-bh-MARGIN))+'px';
+      });
+    });
+
+    /* ══════════════════════════════
+       PWA — Service Worker + Install
+    ══════════════════════════════ */
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('installBanner');
+    const btnInstall    = document.getElementById('btnInstall');
+    const btnDismiss    = document.getElementById('btnDismiss');
+
+    // Register Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('💌 SW registered:', reg.scope))
+          .catch(err => console.warn('SW registration failed:', err));
+      });
+    }
+
+    // Capture install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      // Show banner after 3 seconds
+      setTimeout(() => {
+        installBanner.style.display = 'block';
+      }, 3000);
+    });
+
+    // Install button click
+    btnInstall.addEventListener('click', async () => {
+      installBanner.style.display = 'none';
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('Install outcome:', outcome);
+      deferredPrompt = null;
+    });
+
+    // Dismiss banner
+    btnDismiss.addEventListener('click', () => {
+      installBanner.style.display = 'none';
+    });
+
+    // Hide banner if already installed
+    window.addEventListener('appinstalled', () => {
+      installBanner.style.display = 'none';
+      deferredPrompt = null;
+      console.log('💌 App installed!');
+    });
+  </script>
+</body>
+</html>
