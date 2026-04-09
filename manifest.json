@@ -1,27 +1,24 @@
 {
-  "name": "Tumhare Liye Ek Sawaal 💌",
-  "short_name": "Sawaal 💌",
-  "description": "Ek dil se pocha hua sawaal — sirf tumhare liye 🌹",
+  "name": "Ek Sawaal Hai 💕",
+  "short_name": "Proposal",
+  "description": "A cute interactive proposal app",
   "start_url": "./index.html",
   "display": "standalone",
-  "orientation": "portrait",
   "background_color": "#fff0f5",
-  "theme_color": "#e8476a",
-  "lang": "hi",
+  "theme_color": "#ff6eb0",
+  "orientation": "portrait",
   "icons": [
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%23e8476a'/%3E%3Ctext y='130' x='96' text-anchor='middle' font-size='120'%3E%F0%9F%92%8C%3C/text%3E%3C/svg%3E",
+      "src": "icon-192.png",
       "sizes": "192x192",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%23e8476a'/%3E%3Ctext y='360' x='256' text-anchor='middle' font-size='320'%3E%F0%9F%92%8C%3C/text%3E%3C/svg%3E",
+      "src": "icon-512.png",
       "sizes": "512x512",
-      "type": "image/svg+xml",
+      "type": "image/png",
       "purpose": "any maskable"
     }
-  ],
-  "categories": ["lifestyle", "social"],
-  "screenshots": []
+  ]
 }
